@@ -4,7 +4,12 @@ module.exports = {
         es2021: true,
         jest: true
     },
-    extends: ['plugin:react/recommended', 'airbnb', 'prettier'],
+    extends: [
+        'plugin:react/recommended',
+        'airbnb',
+        'plugin:@typescript-eslint/recommended',
+        'prettier'
+    ],
     parser: '@typescript-eslint/parser',
     parserOptions: {
         ecmaFeatures: {
@@ -15,9 +20,9 @@ module.exports = {
     },
     plugins: [
         'react',
-        '@typescript-eslint',
         'react-hooks',
         'unused-imports',
+        '@typescript-eslint',
         'import'
     ],
     rules: {
