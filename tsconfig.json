@@ -7,10 +7,10 @@
         "jsx": "react-jsx",
         "allowJs": true,
         "moduleResolution": "node",
-        "baseUrl": ".",
+        "baseUrl": "src",
         "strict": true,
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["*"]
         },
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
@@ -26,4 +26,5 @@
             "module": "CommonJS"
         }
     },
+    "include": ["src"]
 }
