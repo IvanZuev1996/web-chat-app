@@ -5,7 +5,6 @@ export function App() {
     return (
         <div className="app">
             <AppRouter />
-            WORK!
         </div>
     );
 }

@@ -2,7 +2,7 @@
 @import 'variables/global';
 
 body {
-    overflow-x: hidden;
+    overflow: hidden;
     font: var(--font-s);
 }
 
@@ -10,7 +10,6 @@ body {
     color: black;
     background: var(--bg-color);
     min-height: 100vh;
-    padding: 30px 50px;
 }
 
 ::-webkit-scrollbar {

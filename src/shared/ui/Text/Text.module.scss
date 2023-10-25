@@ -1,0 +1,87 @@
+.primary {
+    .text {
+        color: var(--primary-color);
+    }
+}
+
+.error {
+    .text {
+        color: var(--error-color);
+    }
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.center {
+    text-align: center;
+}
+
+.max {
+    width: 100%;
+}
+
+.XS {
+    .normal_weight {
+        font: var(--font-xs);
+    }
+
+    .bold_weight {
+        font: var(--font-xs-bold);
+    }
+}
+
+.S {
+    .normal_weight {
+        font: var(--font-s);
+    }
+
+    .bold_weight {
+        font: var(--font-s-bold);
+    }
+}
+
+.LARGE_S {
+    .normal_weight {
+        font: var(--font-large-s);
+    }
+
+    .bold_weight {
+        font: var(--font-large-s-bold);
+    }
+}
+
+.M {
+    .normal_weight {
+        font: var(--font-m);
+    }
+
+    .bold_weight {
+        font: var(--font-m-bold);
+    }
+}
+
+.L {
+    .normal_weight {
+        font: var(--font-l);
+    }
+
+    .bold_weight {
+        font: var(--font-l-bold);
+    }
+}
+
+.XL {
+    .normal_weight {
+        font: var(--font-xl);
+    }
+
+    .bold_weight {
+        font: var(--font-xl-bold);
+    }
+}
