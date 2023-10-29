@@ -4,6 +4,7 @@ import { $api } from 'shared/api/api';
 import { counterReducer } from '@/entities/Counter';
 import { userReducer } from '@/entities/User';
 import { addMessageFormReducer } from '@/features/addMessageForm';
+import { loginFormReducer } from '@/features/authByUsername';
 import { mainPageReducer } from '@/pages/MainPage';
 import { rtkApi } from '@/shared/api/rtkApi';
 
@@ -15,6 +16,7 @@ export function createReduxStore(initialState?: StateSchema) {
         user: userReducer,
         addMessageForm: addMessageFormReducer,
         mainPage: mainPageReducer,
+        loginForm: loginFormReducer,
         [rtkApi.reducerPath]: rtkApi.reducer
     };
 

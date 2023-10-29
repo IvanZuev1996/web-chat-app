@@ -1,33 +1,39 @@
-import { Button, TextField } from '@mui/material';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { Alert, Button, TextField } from '@mui/material';
+import { ChangeEvent, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { userActions } from '@/entities/User';
-import { getRouteMain } from '@/shared/consts/router';
 import { useAppDispatch } from '@/shared/lib/hooks/useAppDispatch/useAppDispatch';
 import { VStack } from '@/shared/ui/Stack';
 import { Text } from '@/shared/ui/Text';
+
+import {
+    getLoginFormError,
+    getLoginFormIsLoading,
+    getLoginFormName
+} from '../../model/selectors/loginForm';
+import { authByUsername } from '../../model/services/authByUsername';
+import { loginFormActions } from '../../model/slice/loginFormSlice';
 
 import cls from './LoginForm.module.scss';
 
 export const LoginForm = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const [username, setUsername] = useState<string>('');
+    const username = useSelector(getLoginFormName);
+    const isLoading = useSelector(getLoginFormIsLoading);
+    const errorMessage = useSelector(getLoginFormError);
 
-    const onLogin = useCallback(() => {
-        dispatch(
-            userActions.setAuthData({
-                id: Date.now().toString(),
-                username
-            })
-        );
-        navigate(getRouteMain());
-    }, [dispatch, navigate, username]);
+    const onLogin = useCallback(async () => {
+        await dispatch(authByUsername(username || ''));
+    }, [dispatch, username]);
 
-    const onChageUsername = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        setUsername(e.target.value);
-    }, []);
+    const onChageUsername = useCallback(
+        (e: ChangeEvent<HTMLInputElement>) => {
+            dispatch(loginFormActions.setName(e.target.value));
+        },
+        [dispatch]
+    );
 
     return (
         <VStack
@@ -50,11 +56,20 @@ export const LoginForm = () => {
                         value={username}
                         onChange={onChageUsername}
                     />
-                    <Button variant="outlined" onClick={onLogin}>
-                        Присоединииться к чату
+                    <Button
+                        variant="outlined"
+                        onClick={onLogin}
+                        disabled={isLoading}
+                    >
+                        Присоединиться к чату
                     </Button>
                 </VStack>
             </VStack>
+            {errorMessage && (
+                <Alert severity="error" className={cls.error}>
+                    {errorMessage}
+                </Alert>
+            )}
         </VStack>
     );
 };
