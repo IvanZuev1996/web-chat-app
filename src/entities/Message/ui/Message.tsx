@@ -1,4 +1,9 @@
-import { VStack } from '@/shared/ui/Stack';
+import { Avatar } from '@mui/material';
+import { useSelector } from 'react-redux';
+
+import { getUserAuthData } from '@/entities/User';
+import { classNames } from '@/shared/lib/helpers/classNames';
+import { HStack, VStack } from '@/shared/ui/Stack';
 import { Text } from '@/shared/ui/Text';
 
 import { MessageType } from '../model/types/message';
@@ -11,15 +16,36 @@ interface MessageProps {
 
 export const Message = (props: MessageProps) => {
     const { message } = props;
+    const userData = useSelector(getUserAuthData);
+    const isUserOwner = message?.person_id === userData?.id;
+
+    if (isUserOwner) {
+        return (
+            <VStack align="end" className={cls.card}>
+                <HStack gap="12" align="start" className={cls.content}>
+                    <VStack gap="8">
+                        <HStack
+                            className={classNames(cls.chip, {}, [cls.active])}
+                        >
+                            <Text>{message?.text}</Text>
+                        </HStack>
+                    </VStack>
+                    <Avatar>H</Avatar>
+                </HStack>
+            </VStack>
+        );
+    }
 
     return (
         <VStack className={cls.card}>
-            <VStack className={cls.content}>
-                <VStack gap="8" max>
-                    <Text weight="bold_weight">Юзернейм</Text>
-                    <Text>{message?.text}</Text>
+            <HStack gap="12" align="start" className={cls.content}>
+                <Avatar>H</Avatar>
+                <VStack gap="8">
+                    <HStack className={cls.chip}>
+                        <Text>{message?.text}</Text>
+                    </HStack>
                 </VStack>
-            </VStack>
+            </HStack>
         </VStack>
     );
 };

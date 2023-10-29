@@ -1,31 +1,30 @@
 import { Card } from '@mui/material';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { Message } from '@/entities/Message';
+import { Message, MessageType } from '@/entities/Message';
 import { AddMessageForm } from '@/features/addMessageForm';
 import { useAppDispatch } from '@/shared/lib/hooks/useAppDispatch/useAppDispatch';
+import { useSocket } from '@/shared/lib/hooks/useSocket/useSocket';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { Text } from '@/shared/ui/Text';
 import { Page } from '@/widgets/Page';
 
-import { useMessages } from '../api/mainPageApi';
 import { addMessage } from '../model/services/addMessage';
 
 import cls from './MainPage.module.scss';
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
-    const { data: messages } = useMessages(null, { pollingInterval: 1000 });
-    const ref = useRef<HTMLDivElement>(null);
+    const { socket } = useSocket();
+    // const { data: messages } = useMessages(null);
+    const [messages, setMessages] = useState<MessageType[]>([
+        { id: 'messages', text: 'messages', person_id: 'person' },
+        { id: 'messages', text: 'messages', person_id: 'person' }
+    ]);
 
     useEffect(() => {
-        const scrollToBottom = () => {
-            if (ref.current) {
-                ref.current.scrollTop = 10000;
-            }
-        };
-        scrollToBottom();
-    }, []);
+        socket?.on('get-messages', (data) => setMessages([...messages, data]));
+    }, [messages, socket]);
 
     const onSendMessage = useCallback(
         (text: string) => {
@@ -49,7 +48,7 @@ const MainPage = () => {
                         </Text>
                     </HStack>
                 </Card>
-                <div ref={ref} className={cls.messagesWrapper}>
+                <div className={cls.messagesWrapper}>
                     {messages?.map((message) => (
                         <Message key={message.id} message={message} />
                     ))}

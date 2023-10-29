@@ -4,6 +4,7 @@ import { ChangeEvent, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useAppDispatch } from '@/shared/lib/hooks/useAppDispatch/useAppDispatch';
+import { useSocket } from '@/shared/lib/hooks/useSocket/useSocket';
 import { HStack } from '@/shared/ui/Stack';
 
 import { getAddMessageFromText } from '../model/selectors/addMessageForm';
@@ -17,6 +18,7 @@ interface AddMessageFormProps {
 
 export const AddMessageForm = (props: AddMessageFormProps) => {
     const { onSendMessage } = props;
+    const { socket } = useSocket();
     const dispatch = useAppDispatch();
     const message = useSelector(getAddMessageFromText);
 
@@ -28,9 +30,15 @@ export const AddMessageForm = (props: AddMessageFormProps) => {
     );
 
     const onSendMessageHandler = useCallback(() => {
-        onSendMessage(message);
+        // onSendMessage(message);
+        if (message.trim()) {
+            socket?.emit('message', {
+                text: message,
+                person_id: '1'
+            });
+        }
         dispatch(addMessageFormActions.setMessage(''));
-    }, [dispatch, message, onSendMessage]);
+    }, [dispatch, message, socket]);
 
     return (
         <HStack align="center" gap="16" max>

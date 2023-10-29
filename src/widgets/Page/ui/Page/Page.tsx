@@ -21,7 +21,6 @@ export const Page = memo(({ children, className }: PageProps) => {
             className={classNames(cls.Page, {}, [className, mountAnimateClass])}
         >
             {children}
-            <div style={{ height: '100px' }} />
         </main>
     );
 });

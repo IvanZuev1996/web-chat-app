@@ -12,13 +12,14 @@
 }
 
 .mainPageContent {
-    width: 50%;
+    width: 70%;
     height: 100vh;
-    max-width: 600px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
 .messagesWrapper {
+    overflow: hidden auto;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -27,5 +28,4 @@
     padding: 20px;
     border-radius: 12px;
     height: 70%;
-    overflow-y: auto;
 }

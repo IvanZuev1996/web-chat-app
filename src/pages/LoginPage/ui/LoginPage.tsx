@@ -1,10 +1,12 @@
+import { LoginForm } from '@/features/authByUsername';
 import { Page } from '@/widgets/Page';
 
 import cls from './LoginPage.module.scss';
 
-const LoginPage = () => {
-    const a = 0;
-    return <Page className={cls.LoginPage}>LoginPage {a}</Page>;
-};
+const LoginPage = () => (
+    <Page className={cls.LoginPage}>
+        <LoginForm />
+    </Page>
+);
 
 export default LoginPage;
