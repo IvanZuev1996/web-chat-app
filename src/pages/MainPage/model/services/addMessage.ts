@@ -26,6 +26,8 @@ export const addMessage = createAsyncThunk<
             throw new Error();
         }
 
+        console.log(response.data.id);
+
         return response.data;
     } catch (e) {
         return rejectWithValue('error');

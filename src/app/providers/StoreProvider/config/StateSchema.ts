@@ -27,3 +27,7 @@ export interface ThunkConfig<T> {
     extra: ThunkExtraArg;
     state: StateSchema;
 }
+
+export interface ErrorType {
+    error: string;
+}

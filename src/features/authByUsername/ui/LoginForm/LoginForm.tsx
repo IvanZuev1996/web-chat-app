@@ -1,7 +1,6 @@
 import { Alert, Button, TextField } from '@mui/material';
 import { ChangeEvent, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch } from '@/shared/lib/hooks/useAppDispatch/useAppDispatch';
 import { VStack } from '@/shared/ui/Stack';
@@ -19,7 +18,6 @@ import cls from './LoginForm.module.scss';
 
 export const LoginForm = () => {
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
     const username = useSelector(getLoginFormName);
     const isLoading = useSelector(getLoginFormIsLoading);
     const errorMessage = useSelector(getLoginFormError);

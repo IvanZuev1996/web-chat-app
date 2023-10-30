@@ -26,7 +26,11 @@ const mainPageSlice = createSlice({
         entities: {},
         ids: []
     }),
-    reducers: {},
+    reducers: {
+        addNewMessage: (state, action: PayloadAction<MessageType>) => {
+            messagesAdapter.setOne(state, action.payload);
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchMessages.pending, (state) => {
@@ -47,4 +51,5 @@ const mainPageSlice = createSlice({
     }
 });
 
+export const { actions: mainPageActions } = mainPageSlice;
 export const { reducer: mainPageReducer } = mainPageSlice;

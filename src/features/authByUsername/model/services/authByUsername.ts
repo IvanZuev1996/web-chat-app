@@ -1,12 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
-import { ThunkConfig } from '@/app/providers/StoreProvider';
+import { ErrorType, ThunkConfig } from '@/app/providers/StoreProvider';
 import { User, userActions } from '@/entities/User';
-
-interface ErrorType {
-    error: string;
-}
 
 export const authByUsername = createAsyncThunk<
     User,

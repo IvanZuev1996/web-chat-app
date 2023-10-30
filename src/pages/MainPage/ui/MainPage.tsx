@@ -1,5 +1,5 @@
-import { Card } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Message, MessageType } from '@/entities/Message';
 import { AddMessageForm } from '@/features/addMessageForm';
@@ -9,34 +9,44 @@ import { HStack, VStack } from '@/shared/ui/Stack';
 import { Text } from '@/shared/ui/Text';
 import { Page } from '@/widgets/Page';
 
-import { addMessage } from '../model/services/addMessage';
+import { fetchMessages } from '../model/services/fetchMessages';
+import { getMessages, mainPageActions } from '../model/slice/mainPageSlice';
 
 import cls from './MainPage.module.scss';
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
+    const elementRef = useRef<HTMLDivElement>(null);
     const { socket } = useSocket();
-    // const { data: messages } = useMessages(null);
-    const [messages, setMessages] = useState<MessageType[]>([
-        { id: 'messages', text: 'messages', person_id: 'person' },
-        { id: 'messages', text: 'messages', person_id: 'person' }
-    ]);
+    const messages = useSelector(getMessages.selectAll);
+
+    const scrollToBottom = useCallback(() => {
+        if (elementRef.current) {
+            elementRef.current.scrollTop = elementRef.current.scrollHeight;
+        }
+    }, []);
 
     useEffect(() => {
-        socket?.on('get-messages', (data) => setMessages([...messages, data]));
-    }, [messages, socket]);
+        dispatch(fetchMessages());
+    }, [dispatch, scrollToBottom]);
 
-    const onSendMessage = useCallback(
-        (text: string) => {
-            dispatch(addMessage(text));
-        },
-        [dispatch]
-    );
+    useEffect(() => {
+        if (messages) {
+            scrollToBottom();
+        }
+    }, [messages, scrollToBottom]);
+
+    useEffect(() => {
+        socket?.on('get-messages', (data: MessageType) => {
+            dispatch(mainPageActions.addNewMessage(data));
+            scrollToBottom();
+        });
+    }, [dispatch, messages, scrollToBottom, socket]);
 
     return (
         <Page className={cls.MainPage}>
             <VStack gap="16" className={cls.mainPageContent}>
-                <Card className={cls.header}>
+                <div ref={elementRef} className={cls.messagesWrapper}>
                     <HStack
                         align="center"
                         justify="center"
@@ -47,13 +57,11 @@ const MainPage = () => {
                             Чат
                         </Text>
                     </HStack>
-                </Card>
-                <div className={cls.messagesWrapper}>
                     {messages?.map((message) => (
                         <Message key={message.id} message={message} />
                     ))}
+                    <AddMessageForm />
                 </div>
-                <AddMessageForm onSendMessage={onSendMessage} />
             </VStack>
         </Page>
     );

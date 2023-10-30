@@ -7,16 +7,19 @@ import { getUserAuthData } from '@/entities/User';
 
 export const addMessage = createAsyncThunk<
     MessageType,
-    MessageType | undefined,
+    string,
     ThunkConfig<string>
->('addMessageForm/addMessage', async (props, thunkApi) => {
+>('addMessageForm/addMessage', async (text, thunkApi) => {
     const { extra, rejectWithValue, getState } = thunkApi;
     const user = getUserAuthData(getState());
 
     try {
         const response: AxiosResponse<MessageType> = await extra.api.post(
             '/messages',
-            { ...props, user }
+            {
+                text,
+                person_id: user?.id
+            }
         );
 
         if (!response.data) {
