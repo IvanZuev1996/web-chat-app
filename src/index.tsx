@@ -13,7 +13,7 @@ const root = ReactDOM.createRoot(
 
 const theme = createTheme({
     typography: {
-        fontFamily: 'Montserrat',
+        fontFamily: 'Light',
         fontSize: 14
     }
 });

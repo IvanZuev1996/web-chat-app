@@ -11,6 +11,7 @@ import { useSocket } from '@/shared/lib/hooks/useSocket/useSocket';
 import { AppRouter } from './providers/router';
 
 import './styles/index.scss';
+import '../shared/fonts/heliosextc.otf';
 
 export function App() {
     const { socket, setSocket } = useSocket();

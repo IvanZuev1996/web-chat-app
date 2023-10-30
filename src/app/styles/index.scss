@@ -1,6 +1,12 @@
 @import 'reset';
 @import 'variables/global';
 
+@font-face {
+    font-family: Light;   /* Can be any text */
+    src: local('HeliosExtC');
+    src: url('../../shared/fonts/heliosextc.otf') format('otf');
+}
+
 body {
     overflow: hidden;
     font: var(--font-large-s);
