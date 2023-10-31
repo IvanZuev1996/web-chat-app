@@ -2,6 +2,7 @@ import { Alert, Button, TextField } from '@mui/material';
 import { ChangeEvent, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { handleKeyPress } from '@/shared/lib/helpers/handleKeyPress';
 import { useAppDispatch } from '@/shared/lib/hooks/useAppDispatch/useAppDispatch';
 import { VStack } from '@/shared/ui/Stack';
 import { Text } from '@/shared/ui/Text';
@@ -24,6 +25,7 @@ export const LoginForm = () => {
 
     const onLogin = useCallback(async () => {
         await dispatch(authByUsername(username || ''));
+        dispatch(loginFormActions.setName(''));
     }, [dispatch, username]);
 
     const onChageUsername = useCallback(
@@ -32,6 +34,8 @@ export const LoginForm = () => {
         },
         [dispatch]
     );
+
+    const handlePress = handleKeyPress(onLogin);
 
     return (
         <VStack
@@ -53,6 +57,7 @@ export const LoginForm = () => {
                         fullWidth
                         value={username}
                         onChange={onChageUsername}
+                        onKeyDown={handlePress}
                     />
                     <Button
                         variant="outlined"

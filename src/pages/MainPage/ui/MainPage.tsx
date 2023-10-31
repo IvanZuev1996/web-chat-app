@@ -1,7 +1,10 @@
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import { Button } from '@mui/material';
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Message, MessageType } from '@/entities/Message';
+import { userActions } from '@/entities/User';
 import { AddMessageForm } from '@/features/addMessageForm';
 import { useAppDispatch } from '@/shared/lib/hooks/useAppDispatch/useAppDispatch';
 import { useSocket } from '@/shared/lib/hooks/useSocket/useSocket';
@@ -16,8 +19,8 @@ import cls from './MainPage.module.scss';
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
-    const elementRef = useRef<HTMLDivElement>(null);
     const { socket } = useSocket();
+    const elementRef = useRef<HTMLDivElement>(null);
     const messages = useSelector(getMessages.selectAll);
 
     const scrollToBottom = useCallback(() => {
@@ -25,6 +28,10 @@ const MainPage = () => {
             elementRef.current.scrollTop = elementRef.current.scrollHeight;
         }
     }, []);
+
+    const onLogout = useCallback(() => {
+        dispatch(userActions.logout());
+    }, [dispatch]);
 
     useEffect(() => {
         dispatch(fetchMessages());
@@ -45,23 +52,33 @@ const MainPage = () => {
 
     return (
         <Page className={cls.MainPage}>
-            <VStack gap="16" className={cls.mainPageContent}>
-                <div ref={elementRef} className={cls.messagesWrapper}>
+            <Button
+                variant="text"
+                startIcon={<KeyboardBackspaceIcon />}
+                color="error"
+                onClick={onLogout}
+            >
+                Выйти
+            </Button>
+            <VStack align="center" className={cls.mainPageContent} max>
+                <VStack align="center" className={cls.chat}>
                     <HStack
                         align="center"
-                        justify="center"
-                        max
+                        justify="between"
                         className={cls.headerContent}
+                        max
                     >
                         <Text size="M" weight="bold_weight">
                             Чат
                         </Text>
                     </HStack>
-                    {messages?.map((message) => (
-                        <Message key={message.id} message={message} />
-                    ))}
+                    <div ref={elementRef} className={cls.messagesWrapper}>
+                        {messages?.map((message) => (
+                            <Message key={message.id} message={message} />
+                        ))}
+                    </div>
                     <AddMessageForm />
-                </div>
+                </VStack>
             </VStack>
         </Page>
     );

@@ -21,11 +21,12 @@ export const Message = (props: MessageProps) => {
 
     if (isUserOwner) {
         return (
-            <VStack align="end" className={cls.card}>
-                <HStack gap="12" align="start" className={cls.content}>
-                    <VStack gap="8">
+            <VStack align="end" className={cls.card} max>
+                <HStack gap="12" align="start" className={cls.content} max>
+                    <VStack gap="8" max align="end">
                         <HStack
                             className={classNames(cls.chip, {}, [cls.active])}
+                            max
                         >
                             <Text>{message?.text}</Text>
                         </HStack>
@@ -37,11 +38,11 @@ export const Message = (props: MessageProps) => {
     }
 
     return (
-        <VStack className={cls.card}>
-            <HStack gap="12" align="start" className={cls.content}>
+        <VStack className={cls.card} max>
+            <HStack gap="12" align="start" className={cls.content} max>
                 <Avatar>H</Avatar>
-                <VStack gap="8">
-                    <HStack className={cls.chip}>
+                <VStack gap="8" max>
+                    <HStack className={cls.chip} max>
                         <Text>{message?.text}</Text>
                     </HStack>
                 </VStack>
