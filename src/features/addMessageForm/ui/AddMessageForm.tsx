@@ -42,11 +42,12 @@ export const AddMessageForm = () => {
         socket?.emit('message', {
             id: Date.now().toString(),
             text: message,
-            person_id: userData?.id
+            person_id: userData?.id,
+            person_name: userData?.name
         });
         dispatch(addMessage(message));
         dispatch(addMessageFormActions.setMessage(''));
-    }, [dispatch, message, socket, userData?.id]);
+    }, [dispatch, message, socket, userData?.id, userData?.name]);
 
     const handlePress = useCallback(
         (event: KeyboardEvent<HTMLElement>) => {
