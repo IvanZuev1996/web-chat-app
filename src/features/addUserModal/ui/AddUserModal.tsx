@@ -64,7 +64,7 @@ export const AddUserModal = (props: AddUserModalProps) => {
                 </Alert>
             )}
             <DialogActions>
-                <Button>Отменить</Button>
+                <Button onClick={onClose}>Отменить</Button>
                 <Button variant="contained" onClick={onAddUser}>
                     Добавить пользователя
                 </Button>
