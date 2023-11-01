@@ -31,7 +31,7 @@ export const Message = (props: MessageProps) => {
                             <Text>{message?.text}</Text>
                         </HStack>
                     </VStack>
-                    <Avatar>H</Avatar>
+                    <Avatar>{message?.person_name?.[0]}</Avatar>
                 </HStack>
             </VStack>
         );
@@ -40,7 +40,7 @@ export const Message = (props: MessageProps) => {
     return (
         <VStack className={cls.card} max>
             <HStack gap="12" align="start" className={cls.content} max>
-                <Avatar>H</Avatar>
+                <Avatar>{message?.person_name?.[0]}</Avatar>
                 <VStack gap="8" max>
                     <HStack className={cls.chip} max>
                         <Text>{message?.text}</Text>

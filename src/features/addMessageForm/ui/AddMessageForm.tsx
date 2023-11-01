@@ -1,12 +1,12 @@
 import SendIcon from '@mui/icons-material/Send';
 import { Button, TextField } from '@mui/material';
-import { ChangeEvent, useCallback } from 'react';
+import { ChangeEvent, useCallback, KeyboardEvent } from 'react';
 import { useSelector } from 'react-redux';
 
 import { getUserAuthData } from '@/entities/User';
-import { handleKeyPress } from '@/shared/lib/helpers/handleKeyPress';
 import { useAppDispatch } from '@/shared/lib/hooks/useAppDispatch/useAppDispatch';
 import { useSocket } from '@/shared/lib/hooks/useSocket/useSocket';
+import { useThrottle } from '@/shared/lib/hooks/useThrottle/useThrottle';
 import { HStack } from '@/shared/ui/Stack';
 
 import { getAddMessageFromText } from '../model/selectors/addMessageForm';
@@ -20,6 +20,12 @@ export const AddMessageForm = () => {
     const dispatch = useAppDispatch();
     const userData = useSelector(getUserAuthData);
     const message = useSelector(getAddMessageFromText);
+
+    const onTypingMessage = useCallback(() => {
+        socket?.emit('typing', userData);
+    }, [socket, userData]);
+
+    const debauncedOnTypingMessage = useThrottle(onTypingMessage, 2000);
 
     const onChangeMessage = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +48,17 @@ export const AddMessageForm = () => {
         dispatch(addMessageFormActions.setMessage(''));
     }, [dispatch, message, socket, userData?.id]);
 
-    const handlePress = handleKeyPress(onSendMessageHandler);
+    const handlePress = useCallback(
+        (event: KeyboardEvent<HTMLElement>) => {
+            if (event.key === 'Enter') {
+                onSendMessageHandler();
+                return;
+            }
+
+            debauncedOnTypingMessage();
+        },
+        [debauncedOnTypingMessage, onSendMessageHandler]
+    );
 
     return (
         <HStack align="center" gap="16" max className={cls.addMessageForm}>

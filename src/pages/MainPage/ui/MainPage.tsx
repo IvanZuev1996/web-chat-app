@@ -1,12 +1,13 @@
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { Button } from '@mui/material';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Message, MessageType } from '@/entities/Message';
 import { userActions } from '@/entities/User';
 import { AddMessageForm } from '@/features/addMessageForm';
 import { useAppDispatch } from '@/shared/lib/hooks/useAppDispatch/useAppDispatch';
+import { useDebounce } from '@/shared/lib/hooks/useDebounce/useDebounce';
 import { useSocket } from '@/shared/lib/hooks/useSocket/useSocket';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { Text } from '@/shared/ui/Text';
@@ -22,6 +23,7 @@ const MainPage = () => {
     const { socket } = useSocket();
     const elementRef = useRef<HTMLDivElement>(null);
     const messages = useSelector(getMessages.selectAll);
+    const [typingStatus, setTypingStatus] = useState<string>('');
 
     const scrollToBottom = useCallback(() => {
         if (elementRef.current) {
@@ -29,13 +31,24 @@ const MainPage = () => {
         }
     }, []);
 
+    const debouncedResetTypingStatus = useDebounce(() => {
+        setTypingStatus('');
+    }, 3000);
+
     const onLogout = useCallback(() => {
         dispatch(userActions.logout());
     }, [dispatch]);
 
     useEffect(() => {
+        socket?.on('usersTypingInfo', (data) => {
+            setTypingStatus(data);
+            debouncedResetTypingStatus();
+        });
+    }, [debouncedResetTypingStatus, setTypingStatus, socket]);
+
+    useEffect(() => {
         dispatch(fetchMessages());
-    }, [dispatch, scrollToBottom]);
+    }, [dispatch]);
 
     useEffect(() => {
         if (messages) {
@@ -71,6 +84,7 @@ const MainPage = () => {
                         <Text size="M" weight="bold_weight">
                             Чат
                         </Text>
+                        <Text size="S">{typingStatus}</Text>
                     </HStack>
                     <div ref={elementRef} className={cls.messagesWrapper}>
                         {messages?.map((message) => (
