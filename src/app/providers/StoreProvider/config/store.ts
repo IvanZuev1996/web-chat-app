@@ -1,9 +1,9 @@
 import { configureStore, ReducersMapObject } from '@reduxjs/toolkit';
 import { $api } from 'shared/api/api';
 
-import { counterReducer } from '@/entities/Counter';
 import { userReducer } from '@/entities/User';
 import { addMessageFormReducer } from '@/features/addMessageForm';
+import { addUserModalReducer } from '@/features/addUserModal';
 import { loginFormReducer } from '@/features/authByUsername';
 import { mainPageReducer } from '@/pages/MainPage';
 import { rtkApi } from '@/shared/api/rtkApi';
@@ -12,11 +12,11 @@ import { StateSchema, ThunkExtraArg } from './StateSchema';
 
 export function createReduxStore(initialState?: StateSchema) {
     const rootReducer: ReducersMapObject<StateSchema> = {
-        counter: counterReducer,
         user: userReducer,
         addMessageForm: addMessageFormReducer,
         mainPage: mainPageReducer,
         loginForm: loginFormReducer,
+        addUserModal: addUserModalReducer,
         [rtkApi.reducerPath]: rtkApi.reducer
     };
 

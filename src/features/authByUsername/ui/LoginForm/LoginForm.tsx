@@ -1,7 +1,8 @@
 import { Alert, Button, TextField } from '@mui/material';
-import { ChangeEvent, useCallback } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { AddUserModal } from '@/features/addUserModal';
 import { handleKeyPress } from '@/shared/lib/helpers/handleKeyPress';
 import { useAppDispatch } from '@/shared/lib/hooks/useAppDispatch/useAppDispatch';
 import { VStack } from '@/shared/ui/Stack';
@@ -19,9 +20,18 @@ import cls from './LoginForm.module.scss';
 
 export const LoginForm = () => {
     const dispatch = useAppDispatch();
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const username = useSelector(getLoginFormName);
     const isLoading = useSelector(getLoginFormIsLoading);
     const errorMessage = useSelector(getLoginFormError);
+
+    const onOpenModal = useCallback(async () => {
+        setIsModalOpen(true);
+    }, []);
+
+    const onCloseModal = useCallback(async () => {
+        setIsModalOpen(false);
+    }, []);
 
     const onLogin = useCallback(async () => {
         await dispatch(authByUsername(username || ''));
@@ -45,6 +55,7 @@ export const LoginForm = () => {
             max
             className={cls.loginFormWrap}
         >
+            <AddUserModal isOpen={isModalOpen} onClose={onCloseModal} />
             <Text weight="bold_weight" size="L">
                 Введите свое имя для входа в чат
             </Text>
@@ -70,6 +81,9 @@ export const LoginForm = () => {
                     </VStack>
                 </VStack>
             </VStack>
+            <Button variant="text" size="small" onClick={onOpenModal}>
+                Добавить нового пользователя
+            </Button>
             {errorMessage && (
                 <Alert severity="error" className={cls.error}>
                     {errorMessage}

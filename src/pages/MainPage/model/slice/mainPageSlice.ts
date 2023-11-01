@@ -23,12 +23,21 @@ const mainPageSlice = createSlice({
     initialState: messagesAdapter.getInitialState<MainPageSchema>({
         isLoading: false,
         error: undefined,
+        lastMessageId: undefined,
+        hasMore: true,
+        isNewPartInited: false,
         entities: {},
         ids: []
     }),
     reducers: {
         addNewMessage: (state, action: PayloadAction<MessageType>) => {
             messagesAdapter.setOne(state, action.payload);
+        },
+        setLastMessageId: (state, action: PayloadAction<number>) => {
+            state.lastMessageId = action.payload;
+        },
+        setIsNewPartInited: (state) => {
+            state.isNewPartInited = true;
         }
     },
     extraReducers: (builder) => {
@@ -41,7 +50,14 @@ const mainPageSlice = createSlice({
                 fetchMessages.fulfilled,
                 (state, action: PayloadAction<MessageType[]>) => {
                     state.isLoading = false;
-                    messagesAdapter.setAll(state, action.payload);
+                    state.hasMore = action.payload.length >= 50;
+
+                    const currentList = messagesAdapter
+                        .getSelectors()
+                        .selectAll(state);
+                    const newList = [...action.payload, ...currentList];
+
+                    messagesAdapter.setAll(state, newList);
                 }
             )
             .addCase(fetchMessages.rejected, (state, action) => {

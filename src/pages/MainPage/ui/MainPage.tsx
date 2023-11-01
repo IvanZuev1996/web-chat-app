@@ -1,5 +1,6 @@
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { Button } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -13,7 +14,13 @@ import { HStack, VStack } from '@/shared/ui/Stack';
 import { Text } from '@/shared/ui/Text';
 import { Page } from '@/widgets/Page';
 
+import {
+    getMainPageHasMore,
+    getMainPageIsLoading,
+    getMainPageNewPartInited
+} from '../model/selectors/mainPage';
 import { fetchMessages } from '../model/services/fetchMessages';
+import { fetchNextMessagesPart } from '../model/services/fetchNextMessagesPart';
 import { getMessages, mainPageActions } from '../model/slice/mainPageSlice';
 
 import cls from './MainPage.module.scss';
@@ -23,7 +30,9 @@ const MainPage = () => {
     const { socket } = useSocket();
     const elementRef = useRef<HTMLDivElement>(null);
     const messages = useSelector(getMessages.selectAll);
-
+    const isLoading = useSelector(getMainPageIsLoading);
+    const hasMore = useSelector(getMainPageHasMore);
+    const isNewPartInited = useSelector(getMainPageNewPartInited);
     const [typingStatus, setTypingStatus] = useState<string>('');
 
     const scrollToBottom = useCallback(() => {
@@ -38,6 +47,10 @@ const MainPage = () => {
 
     const onLogout = useCallback(() => {
         dispatch(userActions.logout());
+    }, [dispatch]);
+
+    const onLoadNextPart = useCallback(() => {
+        dispatch(fetchNextMessagesPart());
     }, [dispatch]);
 
     useEffect(() => {
@@ -55,7 +68,7 @@ const MainPage = () => {
         if (messages) {
             scrollToBottom();
         }
-    }, [messages, scrollToBottom]);
+    }, [isNewPartInited, messages, scrollToBottom]);
 
     useEffect(() => {
         socket?.on('get-messages', (data: MessageType) => {
@@ -88,6 +101,19 @@ const MainPage = () => {
                         <Text size="S">{typingStatus}</Text>
                     </HStack>
                     <div ref={elementRef} className={cls.messagesWrapper}>
+                        {hasMore && (
+                            <Button
+                                variant="text"
+                                size="small"
+                                onClick={onLoadNextPart}
+                                className={cls.messagesLoadBtn}
+                            >
+                                Загрузить более старые сообщения
+                            </Button>
+                        )}
+
+                        {isLoading && <CircularProgress />}
+
                         {messages?.map((message) => (
                             <Message key={message.id} message={message} />
                         ))}
