@@ -23,6 +23,7 @@ const MainPage = () => {
     const { socket } = useSocket();
     const elementRef = useRef<HTMLDivElement>(null);
     const messages = useSelector(getMessages.selectAll);
+
     const [typingStatus, setTypingStatus] = useState<string>('');
 
     const scrollToBottom = useCallback(() => {

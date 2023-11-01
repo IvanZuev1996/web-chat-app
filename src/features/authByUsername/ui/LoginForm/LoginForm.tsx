@@ -59,13 +59,15 @@ export const LoginForm = () => {
                         onChange={onChageUsername}
                         onKeyDown={handlePress}
                     />
-                    <Button
-                        variant="outlined"
-                        onClick={onLogin}
-                        disabled={isLoading}
-                    >
-                        Присоединиться к чату
-                    </Button>
+                    <VStack align="end" gap="12" max>
+                        <Button
+                            variant="contained"
+                            onClick={onLogin}
+                            disabled={isLoading}
+                        >
+                            Войти в чат
+                        </Button>
+                    </VStack>
                 </VStack>
             </VStack>
             {errorMessage && (
