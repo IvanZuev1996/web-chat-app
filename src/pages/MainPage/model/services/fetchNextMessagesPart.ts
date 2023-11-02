@@ -6,7 +6,6 @@ import {
     getMainPageHasMore,
     getMainPageIsLoading
 } from '../selectors/mainPage';
-import { mainPageActions } from '../slice/mainPageSlice';
 
 import { fetchMessages } from './fetchMessages';
 
@@ -20,7 +19,6 @@ export const fetchNextMessagesPart = createAsyncThunk<
     const hasMore = getMainPageHasMore(getState());
 
     if (hasMore && !isLoading) {
-        dispatch(mainPageActions.setIsNewPartInited());
         dispatch(fetchMessages());
     }
 });

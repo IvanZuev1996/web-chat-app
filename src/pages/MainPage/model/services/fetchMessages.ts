@@ -26,7 +26,9 @@ export const fetchMessages = createAsyncThunk<
             throw new Error();
         }
 
-        dispatch(mainPageActions.setLastMessageId(response.data[0].id));
+        if (response.data.length) {
+            dispatch(mainPageActions.setLastMessageId(response.data[0].id));
+        }
 
         return response.data;
     } catch (e) {
