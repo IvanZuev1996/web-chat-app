@@ -21,6 +21,7 @@ import cls from './LoginForm.module.scss';
 export const LoginForm = () => {
     const dispatch = useAppDispatch();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
     const username = useSelector(getLoginFormName);
     const isLoading = useSelector(getLoginFormIsLoading);
     const errorMessage = useSelector(getLoginFormError);

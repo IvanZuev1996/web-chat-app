@@ -1,24 +1,19 @@
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { Button } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Message, MessageType } from '@/entities/Message';
+import { MessageList, MessageType } from '@/entities/Message';
 import { userActions } from '@/entities/User';
 import { AddMessageForm } from '@/features/addMessageForm';
 import { useAppDispatch } from '@/shared/lib/hooks/useAppDispatch/useAppDispatch';
 import { useDebounce } from '@/shared/lib/hooks/useDebounce/useDebounce';
+import { useScrollToBottom } from '@/shared/lib/hooks/useScrollToBottom/useSctollToBottom';
 import { useSocket } from '@/shared/lib/hooks/useSocket/useSocket';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { Text } from '@/shared/ui/Text';
 import { Page } from '@/widgets/Page';
 
-import {
-    getMainPageHasMore,
-    getMainPageIsLoading,
-    getMainPageNewPartInited
-} from '../model/selectors/mainPage';
 import { fetchMessages } from '../model/services/fetchMessages';
 import { fetchNextMessagesPart } from '../model/services/fetchNextMessagesPart';
 import { getMessages, mainPageActions } from '../model/slice/mainPageSlice';
@@ -29,17 +24,11 @@ const MainPage = () => {
     const dispatch = useAppDispatch();
     const { socket } = useSocket();
     const elementRef = useRef<HTMLDivElement>(null);
-    const messages = useSelector(getMessages.selectAll);
-    const isLoading = useSelector(getMainPageIsLoading);
-    const hasMore = useSelector(getMainPageHasMore);
-    const isNewPartInited = useSelector(getMainPageNewPartInited);
-    const [typingStatus, setTypingStatus] = useState<string>('');
+    const { scrollToBottom } = useScrollToBottom(elementRef);
 
-    const scrollToBottom = useCallback(() => {
-        if (elementRef.current) {
-            elementRef.current.scrollTop = elementRef.current.scrollHeight;
-        }
-    }, []);
+    const messages = useSelector(getMessages.selectAll);
+    const [typingStatus, setTypingStatus] = useState<string>('');
+    const [isScrollToBottom, setIsScrollToBottom] = useState<boolean>(true);
 
     const debouncedResetTypingStatus = useDebounce(() => {
         setTypingStatus('');
@@ -51,7 +40,18 @@ const MainPage = () => {
 
     const onLoadNextPart = useCallback(() => {
         dispatch(fetchNextMessagesPart());
+        setIsScrollToBottom(false);
     }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(fetchMessages());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (messages && isScrollToBottom) {
+            scrollToBottom();
+        }
+    }, [isScrollToBottom, messages, scrollToBottom]);
 
     useEffect(() => {
         socket?.on('usersTypingInfo', (data) => {
@@ -61,18 +61,9 @@ const MainPage = () => {
     }, [debouncedResetTypingStatus, setTypingStatus, socket]);
 
     useEffect(() => {
-        dispatch(fetchMessages());
-    }, [dispatch]);
-
-    useEffect(() => {
-        if (messages) {
-            scrollToBottom();
-        }
-    }, [isNewPartInited, messages, scrollToBottom]);
-
-    useEffect(() => {
         socket?.on('get-messages', (data: MessageType) => {
             dispatch(mainPageActions.addNewMessage(data));
+            setIsScrollToBottom(true);
             scrollToBottom();
         });
     }, [dispatch, messages, scrollToBottom, socket]);
@@ -101,22 +92,10 @@ const MainPage = () => {
                         <Text size="S">{typingStatus}</Text>
                     </HStack>
                     <div ref={elementRef} className={cls.messagesWrapper}>
-                        {hasMore && (
-                            <Button
-                                variant="text"
-                                size="small"
-                                onClick={onLoadNextPart}
-                                className={cls.messagesLoadBtn}
-                            >
-                                Загрузить более старые сообщения
-                            </Button>
-                        )}
-
-                        {isLoading && <CircularProgress />}
-
-                        {messages?.map((message) => (
-                            <Message key={message.id} message={message} />
-                        ))}
+                        <MessageList
+                            messages={messages}
+                            onLoadNextPart={onLoadNextPart}
+                        />
                     </div>
                     <AddMessageForm />
                 </VStack>

@@ -6,7 +6,6 @@ import { addMessageFormReducer } from '@/features/addMessageForm';
 import { addUserModalReducer } from '@/features/addUserModal';
 import { loginFormReducer } from '@/features/authByUsername';
 import { mainPageReducer } from '@/pages/MainPage';
-import { rtkApi } from '@/shared/api/rtkApi';
 
 import { StateSchema, ThunkExtraArg } from './StateSchema';
 
@@ -16,8 +15,7 @@ export function createReduxStore(initialState?: StateSchema) {
         addMessageForm: addMessageFormReducer,
         mainPage: mainPageReducer,
         loginForm: loginFormReducer,
-        addUserModal: addUserModalReducer,
-        [rtkApi.reducerPath]: rtkApi.reducer
+        addUserModal: addUserModalReducer
     };
 
     const extraArg: ThunkExtraArg = {
@@ -29,9 +27,7 @@ export function createReduxStore(initialState?: StateSchema) {
         devTools: true,
         preloadedState: initialState,
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware({ thunk: { extraArgument: extraArg } }).concat(
-                rtkApi.middleware
-            )
+            getDefaultMiddleware({ thunk: { extraArgument: extraArg } })
     });
 
     return store;

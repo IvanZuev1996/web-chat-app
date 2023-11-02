@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { getUserAuthData } from '@/entities/User';
 import { useAppDispatch } from '@/shared/lib/hooks/useAppDispatch/useAppDispatch';
 import { useSocket } from '@/shared/lib/hooks/useSocket/useSocket';
-import { useThrottle } from '@/shared/lib/hooks/useThrottle/useThrottle';
 import { HStack } from '@/shared/ui/Stack';
 
 import { getAddMessageFromText } from '../model/selectors/addMessageForm';
@@ -24,8 +23,6 @@ export const AddMessageForm = () => {
     const onTypingMessage = useCallback(() => {
         socket?.emit('typing', userData);
     }, [socket, userData]);
-
-    const debauncedOnTypingMessage = useThrottle(onTypingMessage, 2000);
 
     const onChangeMessage = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
@@ -56,9 +53,9 @@ export const AddMessageForm = () => {
                 return;
             }
 
-            debauncedOnTypingMessage();
+            onTypingMessage();
         },
-        [debauncedOnTypingMessage, onSendMessageHandler]
+        [onTypingMessage, onSendMessageHandler]
     );
 
     return (

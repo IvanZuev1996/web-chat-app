@@ -27,6 +27,7 @@ interface AddUserModalProps {
 export const AddUserModal = (props: AddUserModalProps) => {
     const { onClose, isOpen = false } = props;
     const dispatch = useAppDispatch();
+
     const name = useSelector(getAddUserModalName);
     const errorMessage = useSelector(getAddUserModalError);
 

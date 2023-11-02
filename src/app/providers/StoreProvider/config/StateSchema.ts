@@ -5,7 +5,6 @@ import { AddMessageFormSchema } from '@/features/addMessageForm';
 import { AddUserModalSchema } from '@/features/addUserModal/model/types/addUserModalSchema';
 import { LoginFormSchema } from '@/features/authByUsername';
 import { MainPageSchema } from '@/pages/MainPage';
-import { rtkApi } from '@/shared/api/rtkApi';
 
 export interface StateSchema {
     user: UserSchema;
@@ -13,7 +12,6 @@ export interface StateSchema {
     mainPage: MainPageSchema;
     loginForm: LoginFormSchema;
     addUserModal: AddUserModalSchema;
-    [rtkApi.reducerPath]: ReturnType<typeof rtkApi.reducer>;
 }
 
 export type StateSchemaKey = keyof StateSchema;

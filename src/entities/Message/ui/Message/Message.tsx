@@ -6,7 +6,7 @@ import { classNames } from '@/shared/lib/helpers/classNames';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { Text } from '@/shared/ui/Text';
 
-import { MessageType } from '../model/types/message';
+import { MessageType } from '../../model/types/message';
 
 import cls from './Message.module.scss';
 
